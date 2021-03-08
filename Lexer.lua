@@ -1,6 +1,6 @@
 --[=[
 	Lexical scanner for creating a sequence of tokens from Lua source code.
-	This is a heavily modified and Roblox-optimized version of
+	This is a heavily modified version of
 	the original Penlight Lexer module:
 		https://github.com/stevedonovan/Penlight
 	Authors:
@@ -17,7 +17,6 @@
 	List of possible tokens:
 		- iden
 		- keyword
-		- builtin
 		- string
 		- number
 		- comment
@@ -73,7 +72,7 @@
 local lexer = {}
 
 local Prefix,Suffix,Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]+"
-local NUMBER_A = "0x[%da-fA-F]+"
+local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
 local NUMBER_C = "%d+[%._]?[%d_eE]*"
 local OPERATORS = "[:;<>/~%*%(%)%-=,{}%.#%^%+%%]+"
@@ -97,48 +96,7 @@ local lua_keyword = {
 	["end"] = true, ["false"] = true, ["for"] = true, ["function"] = true, ["if"] = true,
 	["in"] = true, ["local"] = true, ["nil"] = true, ["not"] = true, ["while"] = true,
 	["or"] = true, ["repeat"] = true, ["return"] = true, ["then"] = true, ["true"] = true,
-	--[[["self"] = true,]] ["until"] = true,
-
-	["continue"] = true,
-
-	--["plugin"] = true, --Highlights as a keyword instead of a builtin cuz Roblox is weird
-}
-
-
-local lua_builtin = {
-	-- Lua Functions
-	["assert"] = true;["collectgarbage"] = true;["error"] = true;["getfenv"] = true;
-	["getmetatable"] = true;["ipairs"] = true;["loadstring"] = true;["newproxy"] = true;
-	["next"] = true;["pairs"] = true;["pcall"] = true;["print"] = true;["rawequal"] = true;
-	["rawget"] = true;["rawset"] = true;["select"] = true;["setfenv"] = true;["setmetatable"] = true;
-	["tonumber"] = true;["tostring"] = true;["type"] = true;["unpack"] = true;["xpcall"] = true;
-	["gcinfo"] = true;["require"] = true;["warn"] = true;
-
-	-- Lua Variables
-	["_G"] = true;["_VERSION"] = true;
-
-	-- Lua Tables
-	["bit32"] = true;["coroutine"] = true;["debug"] = true;
-	["math"] = true;["os"] = true;["string"] = true;
-	["table"] = true;["utf8"] = true;
-
-	-- Roblox Functions
-	["delay"] = true;["elapsedTime"] = true;["settings"] = true;["spawn"] = true;
-	["tick"] = true;["time"] = true;["typeof"] = true;["UserSettings"] = true;
-	["wait"] = true;["ypcall"] = true;
-
-	-- Roblox Variables
-	["Enum"] = true;["game"] = true;["shared"] = true;["script"] = true;
-	["workspace"] = true;
-
-	-- Roblox Tables
-	["Axes"] = true;["BrickColor"] = true;["CellId"] = true;["CFrame"] = true;["Color3"] = true;
-	["ColorSequence"] = true;["ColorSequenceKeypoint"] = true;["DateTime"] = true;
-	["DockWidgetPluginGuiInfo"] = true;["Faces"] = true;["Instance"] = true;["NumberRange"] = true;
-	["NumberSequence"] = true;["NumberSequenceKeypoint"] = true;["PathWaypoint"] = true;
-	["PhysicalProperties"] = true;["PluginDrag"] = true;["Random"] = true;["Ray"] = true;["Rect"] = true;
-	["Region3"] = true;["Region3int16"] = true;["TweenInfo"] = true;["UDim"] = true;["UDim2"] = true;
-	["Vector2"] = true;["Vector2int16"] = true;["Vector3"] = true;["Vector3int16"] = true;
+	["until"] = true,
 }
 
 local function idump(tok)
@@ -169,8 +127,6 @@ local function lua_vdump(tok)
 
 	if lua_keyword[cleanTok] then
 		return coroutine.yield("keyword", tok)
-	elseif lua_builtin[cleanTok] then
-		return coroutine.yield("builtin", tok)
 	else
 		return coroutine.yield("iden", tok)
 	end
@@ -205,6 +161,44 @@ local lua_matches = {
 
 	-- Unknown
 	{"^.", idump}
+}
+
+local implementation_spesific = {
+	["Lua 5.2"] = {
+		keywors = {
+			["goto"] = true,
+		},
+		operators = {
+			
+		}
+	},
+	["Lua 5.3"] = {
+		keywors = {
+			["goto"] = true,
+		},
+		operators = {
+			"&|~",
+		}
+	},
+	["Lua 5.4"] = {
+		keywors = {
+			["goto"] = true,
+		},
+		operators = {
+			"&|~", "", "<const>", "<toclose>"
+		}
+	},
+	LuaU = {
+		keywors = {
+			["continue"] = true,
+		},
+		operators = {
+			
+		},
+		numbers = {
+			"0[bB][01]+"
+		},
+	},
 }
 
 --- Create a plain token iterator from a string.
@@ -310,7 +304,7 @@ function lexer.navigator()
 
 		self._ScanThread = coroutine.create(function()
 			for Token,Src in lexer.scan(self.Source) do
-				self._RealIndex += 1
+				self._RealIndex = self._RealIndex + 1
 				self.TokenCache[self._RealIndex] = {Token; Src;}
 				coroutine.yield(Token,Src)
 			end
@@ -318,7 +312,7 @@ function lexer.navigator()
 	end
 
 	function nav.Next()
-		nav._UserIndex += 1
+		nav._UserIndex = nav._UserIndex + 1
 
 		if nav._RealIndex >= nav._UserIndex then
 			-- Already scanned, return cached
