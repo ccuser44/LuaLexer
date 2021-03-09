@@ -76,7 +76,7 @@ local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
 local NUMBER_C = "%d+[%._]?[%d_eE]*"
 local CONCAT_OP = "%.%."
-local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=",, "~=", "=="
+local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=", "~=", "=="
 local OPERATORS = "[:;<>/~%*%(%)%-=,{}%.#%^%+%%]"
 local BRACKETS = "[%[%]]+" -- needs to be separate pattern from other operators or it'll mess up multiline strings
 local IDEN = "[%a_][%w_]*"
@@ -193,6 +193,11 @@ local lua_matches = {
 	{Prefix.. COMMENT_INCOMP ..Suffix, cdump},
 
 	-- Operators
+	{Prefix.. CONCAT_OP ..Suffix, odump},
+	{Prefix.. LOREQ_OP ..Suffix, odump},
+	{Prefix.. GOREQ_OP ..Suffix, odump},
+	{Prefix.. NOTEQ_OP ..Suffix, odump},
+	{Prefix.. EQ_OP ..Suffix, odump},
 	{Prefix.. OPERATORS ..Suffix, odump},
 	{Prefix.. BRACKETS ..Suffix, odump},
 
