@@ -103,12 +103,12 @@ local lua_keyword = {
 
 local implementation_spesific = {
 	["Lua 5.2"] = {
-		keywors = {
+		keywords = {
 			["goto"] = true,
 		}
 	},
 	["Lua 5.3"] = {
-		keywors = {
+		keywords = {
 			["goto"] = true,
 		},
 		operators = {
@@ -116,7 +116,7 @@ local implementation_spesific = {
 		}
 	},
 	["Lua 5.4"] = {
-		keywors = {
+		keywords = {
 			["goto"] = true,
 		},
 		operators = {
@@ -124,14 +124,14 @@ local implementation_spesific = {
 		}
 	},
 	LuaU = {
-		keywors = {
+		keywords = {
 			["continue"] = true,
 		},
 		operators = {
 			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.="
 		},
 		numbers = {
-			"0[bB][01]+"
+			"0[bB][01_]+"--, "0[xX][%da-fA-F]+".
 		},
 	},
 }
@@ -157,7 +157,7 @@ local function cdump(tok)
 	return coroutine.yield("comment", tok)
 end
 
-local function lua_vdump(tok)
+local function lua_vdump(tok, implementation)
 	-- Since we merge spaces into the tok, we need to remove them
 	-- in order to check the actual word it contains
 	local cleanTok = string.gsub(tok, Cleaner, "")
@@ -205,10 +205,28 @@ local lua_matches = {
 	{"^.", idump}
 }
 
+local implementation_spesific_matches = {}
+
+for version, data in pairs(implementation_spesific) do
+	local NewTable = {}
+	local keywords, operators, numbers = nil, nil, nil
+	if numbers then
+		for _, v in ipairs(numbers) do
+			table.insert(NewTable, {Prefix.. v ..Suffix, ndump})
+		end
+	end
+	if operators then
+		for _, v in ipairs(operators) do
+			table.insert(NewTable, {Prefix.. v ..Suffix, odump})
+		end
+	end
+	implementation_spesific_matches[version] = NewTable
+end
+
 --- Create a plain token iterator from a string.
 -- @tparam string s a string.	
 
-function lexer.scan(s)
+function lexer.scan(s, implementation)
 	local startTime = os.clock()
 	lexer.finished = false
 
@@ -307,7 +325,7 @@ function lexer.navigator()
 		table.clear(self.TokenCache)
 
 		self._ScanThread = coroutine.create(function()
-			for Token,Src in lexer.scan(self.Source) do
+			for Token, Src in lexer.scan(self.Source) do
 				self._RealIndex = self._RealIndex + 1
 				self.TokenCache[self._RealIndex] = {Token; Src;}
 				coroutine.yield(Token,Src)
@@ -322,14 +340,14 @@ function lexer.navigator()
 			-- Already scanned, return cached
 			return (table.unpack or unpack)(nav.TokenCache[nav._UserIndex])
 		else
-			if coroutine.status(nav._ScanThread) == 'dead' then
+			if coroutine.status(nav._ScanThread) == "dead" then
 				-- Scan thread dead
 				return
 			else
 				local success, token, src = coroutine.resume(nav._ScanThread)
 				if success and token then
 					-- Scanned new data
-					return token,src
+					return token, src
 				else
 					-- Lex completed
 					return
@@ -351,16 +369,16 @@ function lexer.navigator()
 				return
 			end
 		else
-			if coroutine.status(nav._ScanThread) == 'dead' then
+			if coroutine.status(nav._ScanThread) == "dead" then
 				-- Scan thread dead
 				return
 			else
 
 				local IterationsAway = GoalIndex - nav._RealIndex
 
-				local success, token, src = nil,nil,nil
+				local success, token, src = nil, nil, nil
 
-				for i=1, IterationsAway do
+				for i = 1, IterationsAway do
 					success, token, src = coroutine.resume(nav._ScanThread)
 					if not (success or token) then
 						-- Lex completed
@@ -368,7 +386,7 @@ function lexer.navigator()
 					end
 				end
 
-				return token,src
+				return token, src
 			end
 		end
 
