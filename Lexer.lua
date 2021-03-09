@@ -75,7 +75,9 @@ local Prefix,Suffix,Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*", "
 local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
 local NUMBER_C = "%d+[%._]?[%d_eE]*"
-local OPERATORS = "[:;<>/~%*%(%)%-=,{}%.#%^%+%%]+"
+local CONCAT_OP = "%.%."
+local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=",, "~=", "=="
+local OPERATORS = "[:;<>/~%*%(%)%-=,{}%.#%^%+%%]"
 local BRACKETS = "[%[%]]+" -- needs to be separate pattern from other operators or it'll mess up multiline strings
 local IDEN = "[%a_][%w_]*"
 local STRING_EMPTY = "(['\"])%1"							--Empty String
@@ -110,7 +112,7 @@ local implementation_spesific = {
 			["goto"] = true,
 		},
 		operators = {
-			"&|~",
+			">>", "<<", "[&|~]", "//",
 		}
 	},
 	["Lua 5.4"] = {
@@ -118,7 +120,7 @@ local implementation_spesific = {
 			["goto"] = true,
 		},
 		operators = {
-			"&|~", "", "<const>", "<toclose>"
+			">>", "<<", "[&|~]", "//", "<const>", "<toclose>"
 		}
 	},
 	LuaU = {
@@ -126,7 +128,7 @@ local implementation_spesific = {
 			["continue"] = true,
 		},
 		operators = {
-			
+			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.="
 		},
 		numbers = {
 			"0[bB][01]+"
