@@ -99,6 +99,41 @@ local lua_keyword = {
 	["until"] = true,
 }
 
+local implementation_spesific = {
+	["Lua 5.2"] = {
+		keywors = {
+			["goto"] = true,
+		}
+	},
+	["Lua 5.3"] = {
+		keywors = {
+			["goto"] = true,
+		},
+		operators = {
+			"&|~",
+		}
+	},
+	["Lua 5.4"] = {
+		keywors = {
+			["goto"] = true,
+		},
+		operators = {
+			"&|~", "", "<const>", "<toclose>"
+		}
+	},
+	LuaU = {
+		keywors = {
+			["continue"] = true,
+		},
+		operators = {
+			
+		},
+		numbers = {
+			"0[bB][01]+"
+		},
+	},
+}
+
 local function idump(tok)
 	--print("tok unknown:",tok)
 	return coroutine.yield("iden", tok)
@@ -161,44 +196,6 @@ local lua_matches = {
 
 	-- Unknown
 	{"^.", idump}
-}
-
-local implementation_spesific = {
-	["Lua 5.2"] = {
-		keywors = {
-			["goto"] = true,
-		},
-		operators = {
-			
-		}
-	},
-	["Lua 5.3"] = {
-		keywors = {
-			["goto"] = true,
-		},
-		operators = {
-			"&|~",
-		}
-	},
-	["Lua 5.4"] = {
-		keywors = {
-			["goto"] = true,
-		},
-		operators = {
-			"&|~", "", "<const>", "<toclose>"
-		}
-	},
-	LuaU = {
-		keywors = {
-			["continue"] = true,
-		},
-		operators = {
-			
-		},
-		numbers = {
-			"0[bB][01]+"
-		},
-	},
 }
 
 --- Create a plain token iterator from a string.
