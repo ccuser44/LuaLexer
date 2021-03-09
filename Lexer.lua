@@ -27,7 +27,7 @@
 		
 		-- The 'scan' function returns a token iterator:
 		for token,src in lexer.scan(source) do
-			print(token, "\'"..src.."\'")
+			print(token, "'"..src.."'")
 		end
 		-->	keyword 'for '
 		-->	iden 'i '
@@ -44,10 +44,10 @@
 		nav:SetSource(source) -- You can reuse navigators by setting a new Source
 		
 		for token,src in nav.Next do
-			print(token, "\'"..src.."\'")
+			print(token, "'"..src.."'")
 			local peektoken,peeksrc = nav.Peek(2) -- You can peek backwards by passing a negative input
 			if peektoken then
-				print("  Peeked ahead by 2:",peektoken,"\'"..peeksrc.."\'")
+				print("  Peeked ahead by 2:",peektoken,"'"..peeksrc.."'")
 			end
 		end
 		
