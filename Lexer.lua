@@ -284,7 +284,7 @@ function lexer.navigator()
 
 	local nav = {
 		Source = "";
-		TokenCache = table.create(50);
+		TokenCache = table.create and table.create(50) or {};
 
 		_RealIndex = 0;
 		_UserIndex = 0;
@@ -320,7 +320,7 @@ function lexer.navigator()
 
 		if nav._RealIndex >= nav._UserIndex then
 			-- Already scanned, return cached
-			return table.unpack(nav.TokenCache[nav._UserIndex])
+			return (table.unpack or unpack)(nav.TokenCache[nav._UserIndex])
 		else
 			if coroutine.status(nav._ScanThread) == 'dead' then
 				-- Scan thread dead
@@ -345,7 +345,7 @@ function lexer.navigator()
 		if nav._RealIndex >= GoalIndex then
 			-- Already scanned, return cached
 			if GoalIndex > 0 then
-				return table.unpack(nav.TokenCache[GoalIndex])
+				return (table.unpack or unpack)(nav.TokenCache[GoalIndex])
 			else
 				-- Invalid peek
 				return
