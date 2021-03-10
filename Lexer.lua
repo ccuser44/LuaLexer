@@ -104,28 +104,28 @@ local lua_keyword = {
 local implementation_spesific = {
 	["Lua 5.2"] = {
 		keywords = {
-			["goto"] = true,
+			"goto",
 		}
 	},
 	["Lua 5.3"] = {
 		keywords = {
-			["goto"] = true,
+			"goto",
 		},
 		operators = {
-			">>", "<<", "[&|~]", "//",
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//",
 		}
 	},
 	["Lua 5.4"] = {
 		keywords = {
-			["goto"] = true,
+			"goto",
 		},
 		operators = {
-			">>", "<<", "[&|~]", "//", "<const>", "<toclose>"
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//", "<const>", "<toclose>"
 		}
 	},
 	LuaU = {
 		keywords = {
-			["continue"] = true,
+			"continue",
 		},
 		operators = {
 			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.="
@@ -155,6 +155,10 @@ end
 
 local function cdump(tok)
 	return coroutine.yield("comment", tok)
+end
+
+local function kdump(tok)
+	return coroutine.yield("keyword", tok)
 end
 
 local function lua_vdump(tok, implementation)
@@ -209,7 +213,12 @@ local implementation_spesific_matches = {}
 
 for version, data in pairs(implementation_spesific) do
 	local NewTable = {}
-	local keywords, operators, numbers = nil, nil, nil
+	local keywords, operators, numbers = data.keywords, data.operators, data.numbers
+	if keywords then
+		for _, v in ipairs(keywords) do
+			table.insert(NewTable, {Prefix.. v ..Suffix, kdump})
+		end
+	end
 	if numbers then
 		for _, v in ipairs(numbers) do
 			table.insert(NewTable, {Prefix.. v ..Suffix, ndump})
