@@ -45,9 +45,9 @@
 		
 		for token,src in nav.Next do
 			print(token, "'"..src.."'")
-			local peektoken,peeksrc = nav.Peek(2) -- You can peek backwards by passing a negative input
+			local peektoken, peeksrc = nav.Peek(2) -- You can peek backwards by passing a negative input
 			if peektoken then
-				print("  Peeked ahead by 2:",peektoken,"'"..peeksrc.."'")
+				print("  Peeked ahead by 2:", peektoken, "'"..peeksrc.."'")
 			end
 		end
 		
@@ -71,7 +71,7 @@
 
 local lexer = {}
 
-local Prefix,Suffix,Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]+"
+local Prefix, Suffix, Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]+"
 local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
 local NUMBER_C = "%d+[%._]?[%d_eE]*"
@@ -102,25 +102,36 @@ local lua_keyword = {
 }
 
 local implementation_spesific = {
+	Lua = { -- Just lua in general. Could be used for example where you want to have it for Lua in general not just a spesific version. If not specified a version the parser will default to this.
+		keywords = {
+			"continue", "goto", "<const>", "<toclose>"
+		},
+		operators = {
+			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "~=", ">>", "<<", "[&|~]", "//"
+		},
+		numbers = {
+			"0[bB][01_]+"--, "0[xX][%da-fA-F]+".
+		},
+	},
 	["Lua 5.2"] = {
 		keywords = {
-			"goto",
+			"goto"
 		}
 	},
 	["Lua 5.3"] = {
 		keywords = {
-			"goto",
+			"goto"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//",
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
 		}
 	},
 	["Lua 5.4"] = {
 		keywords = {
-			"goto",
+			"goto", "<const>", "<toclose>"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//", "<const>", "<toclose>"
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
 		}
 	},
 	LuaU = {
@@ -133,7 +144,7 @@ local implementation_spesific = {
 		numbers = {
 			"0[bB][01_]+"--, "0[xX][%da-fA-F]+".
 		},
-	},
+	}
 }
 
 local function idump(tok)
