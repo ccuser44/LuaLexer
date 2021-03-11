@@ -75,9 +75,10 @@ local Prefix, Suffix, Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*",
 local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
 local NUMBER_C = "%d+[%._]?[%d_eE]*"
+local VARARG = "%.%.%"
 local CONCAT_OP = "%.%."
 local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=", "~=", "=="
-local OPERATORS = "[:;<>/~%*%(%)%-=,{}%.#%^%+%%]"
+local OPERATORS = "[;<>/%*%(%)%-=,{}%.#%^%+%%]"
 local BRACKETS = "[%[%]]+" -- needs to be separate pattern from other operators or it'll mess up multiline strings
 local IDEN = "[%a_][%w_]*"
 local STRING_EMPTY = "(['\"])%1"							--Empty String
@@ -187,6 +188,7 @@ end
 local lua_matches = {
 	-- Indentifiers
 	{Prefix.. IDEN ..Suffix, lua_vdump},
+	{Prefix.. VARARG ..Suffix, kdump},
 
 	-- Numbers
 	{Prefix.. NUMBER_A ..Suffix, ndump},
