@@ -79,7 +79,7 @@ local VARARG = "%.%.%"
 local CONCAT_OP = "%.%."
 local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=", "~=", "=="
 local OPERATORS = "[;<>/%*%(%)%-=,{}%.#%^%+%%]"
-local BRACKETS = "[%[%]]+" -- needs to be separate pattern from other operators or it'll mess up multiline strings
+local BRACKETS = "[%[%]]" -- needs to be separate pattern from other operators or it'll mess up multiline strings
 local IDEN = "[%a_][%w_]*"
 local STRING_EMPTY = "(['\"])%1"							--Empty String
 local STRING_PLAIN = [=[(['"])[%w%p \t\v\b\f\r\a]-([^%\]%1)]=]	--TODO: Handle escaping escapes
