@@ -105,10 +105,10 @@ local lua_keyword = {
 local implementation_spesific = {
 	Lua = { -- Just lua in general. Could be used for example where you want to have it for Lua in general not just a spesific version. If not specified a version the parser will default to this.
 		keywords = {
-			"continue", "goto", "<const>", "<toclose>"
+			"continue", "goto", "<const>", "<toclose>", "::"..IDEN.."::"
 		},
 		operators = {
-			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "~=", ">>", "<<", "[&|~]", "//"
+			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "~=", ">>", "<<", "=>",  "[:&|~]", "//"
 		},
 		numbers = {
 			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
@@ -116,12 +116,12 @@ local implementation_spesific = {
 	},
 	["Lua 5.2"] = {
 		keywords = {
-			"goto"
+			"goto", "::"..IDEN.."::"
 		}
 	},
 	["Lua 5.3"] = {
 		keywords = {
-			"goto"
+			"goto", "::"..IDEN.."::"
 		},
 		operators = {
 			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
@@ -129,7 +129,7 @@ local implementation_spesific = {
 	},
 	["Lua 5.4"] = {
 		keywords = {
-			"goto", "<const>", "<toclose>"
+			"goto", "<const>", "<toclose>", "::"..IDEN.."::"
 		},
 		operators = {
 			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
@@ -140,7 +140,7 @@ local implementation_spesific = {
 			"continue",
 		},
 		operators = {
-			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "[:|~]"
+			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "=>", "[:|~]"
 		},
 		numbers = {
 			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
