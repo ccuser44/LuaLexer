@@ -103,12 +103,12 @@ local lua_keyword = {
 }
 
 local implementation_spesific = {
-	Lua = { -- Just lua in general. Could be used for example where you want to have it for Lua in general not just a spesific version. If not specified a version the parser will default to this.
+	Lua = { -- Any version of lua. Could be used for example where you want to have it for Lua in general not just a spesific version. If not specified a version the parser will default to this.
 		keywords = {
-			"continue", "goto", "<const>", "<toclose>", "::"..IDEN.."::"
+			"continue", "goto", "<const>", "<toclose>"
 		},
 		operators = {
-			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "~=", ">>", "<<", "=>",  "[:&|~]", "//"
+			"%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "~=", ">>", "<<", "::", "=>",  "[:&|~]", "//"
 		},
 		numbers = {
 			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
@@ -116,23 +116,26 @@ local implementation_spesific = {
 	},
 	["Lua 5.2"] = {
 		keywords = {
-			"goto", "::"..IDEN.."::"
+			"goto"
+		}
+		operators = {
+			"::"
 		}
 	},
 	["Lua 5.3"] = {
 		keywords = {
-			"goto", "::"..IDEN.."::"
+			"goto"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
 		}
 	},
 	["Lua 5.4"] = {
 		keywords = {
-			"goto", "<const>", "<toclose>", "::"..IDEN.."::"
+			"goto", "<const>", "<toclose>"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "[&|~]", "//"
+			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
 		}
 	},
 	LuaU = {
