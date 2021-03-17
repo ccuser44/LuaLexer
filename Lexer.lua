@@ -108,7 +108,7 @@ local implementation_spesific = {
 			"continue", "goto", "<const>", "<toclose>"
 		},
 		operators = {
-			"~=", "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", ">>", "<<", "::", "=>",  "[:&|~]", "//"
+			NOTEQ_OP, "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", ">>", "<<", "::", "=>",  "[:&|~]", "//"
 		},
 		numbers = {
 			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
@@ -127,7 +127,7 @@ local implementation_spesific = {
 			"goto"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
+			NOTEQ_OP, --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
 		}
 	},
 	["Lua 5.4"] = {
@@ -135,7 +135,7 @@ local implementation_spesific = {
 			"goto", "<const>", "<toclose>"
 		},
 		operators = {
-			"~=", --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
+			NOTEQ_OP, --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
 		}
 	},
 	LuaU = {
@@ -143,7 +143,7 @@ local implementation_spesific = {
 			"continue",
 		},
 		operators = {
-			"~=", "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "=>", "[:|~]"
+			NOTEQ_OP, "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "=>", "[:|~]"
 		},
 		numbers = {
 			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
