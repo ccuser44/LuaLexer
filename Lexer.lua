@@ -74,7 +74,7 @@ local lexer = {}
 local Prefix, Suffix, Cleaner = "^[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]*", "[ \t\n\0\a\b\v\f\r]+"
 local NUMBER_A = "0[xX][%da-fA-F]+"
 local NUMBER_B = "%d+%.?%d*[eE][%+%-]?%d+"
-local NUMBER_C = "%d+[%._]?[%d_eE]*"
+local NUMBER_C = "%d+[%.]?[%deE]*"
 local VARARG = "%.%.%"
 local CONCAT_OP = "%.%."
 local LOREQ_OP, GOREQ_OP, NOTEQ_OP, EQ_OP = "<=", ">=", "~=", "=="
@@ -111,7 +111,7 @@ local implementation_spesific = {
 			NOTEQ_OP, "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", ">>", "<<", "::", "=>",  "[:&|~]", "//"
 		},
 		numbers = {
-			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
+			"%d+[%._]?[%_deE]*", "0[bB][01_]+", "0[xX][_%da-fA-F]+"
 		},
 	},
 	["Lua 5.2"] = {
@@ -146,7 +146,7 @@ local implementation_spesific = {
 			NOTEQ_OP, "%+=", "%-=", "%*=", "/=", "%%=", "%^=", "%.%.=", "=>", "[:|~]"
 		},
 		numbers = {
-			"0[bB][01_]+", "0[xX][_%da-fA-F]+"
+			"%d+[%._]?[%_deE]*", "0[bB][01_]+", "0[xX][_%da-fA-F]+"
 		},
 	}
 }
