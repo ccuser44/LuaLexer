@@ -347,7 +347,11 @@ function lexer.navigator()
 
 		self._RealIndex = 0;
 		self._UserIndex = 0;
-		table.clear(self.TokenCache)
+		if table.clear then
+			table.clear(self.TokenCache)
+		else
+			self.TokenCache = {}
+		end
 
 		self._ScanThread = coroutine.create(function()
 			for Token, Src in lexer.scan(self.Source) do
