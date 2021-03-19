@@ -138,7 +138,7 @@ local implementation_spesific = {
 			NOTEQ_OP, --[[Has to be added due to bitwise operators]] ">>", "<<", "::", "[&|~]", "//"
 		}
 	},
-	LuaU = {
+	Luau = {
 		keywords = {
 			"continue",
 		},
