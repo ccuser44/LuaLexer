@@ -257,7 +257,11 @@ function lexer.scan(s, include_wspace, merge_wspace, implementation)
 	assert(type(s) == "string"), "invalid argument #1 to 'scan' (string expected, got " .. type(s))
 	assert(type(include_wspace) == "boolean"), "invalid argument #2 to 'scan' (boolean expected, got " .. type(include_wspace))
 	assert(type(typemerge_wspace) == "boolean"), "invalid argument #3 to 'scan' (boolean expected, got " .. type(typemerge_wspace))
-	local implementation = (implementation and assert(type(implementation) == "string"), "bad argument #4 to 'scan' (string expected, got " .. type(implementation)) and implementation or "Lua"
+	local matches
+	do
+		local implementation = (implementation and assert(type(implementation) == "string"), "bad argument #4 to 'scan' (string expected, got " .. type(implementation)) and implementation or "Lua"
+		matches = (implementation and implementation_spesific_matches[implementation]) {(table.unpack or unpack)(implementation_spesific_matches[implementation]), (table.unpack or unpack)(lua_matches)} or lua_matches
+	end
 
 	local function lex(first_arg)
 		local line_nr = 0
@@ -298,7 +302,6 @@ function lexer.scan(s, include_wspace, merge_wspace, implementation)
 					handle_requests(coroutine.yield())
 				end
 			end
-			local matches = (implementation and implementation_spesific_matches[implementation]) {(table.unpack or unpack)(implementation_spesific_matches[implementation]), (table.unpack or unpack)(lua_matches)} or lua_matches
 			for _, m in ipairs(matches) do
 				local findres = {}
 				local i1, i2 = string.find(s, m[1], idx)
@@ -348,7 +351,7 @@ function lexer.navigator()
 	end
 
 	function nav:SetSource(SourceString)
-		self.Source = SourceString
+		self.Source = assert(type(SourceString) == "string") and SourceString, "Attempt to SetSource failed: Passed value is not a string")
 
 		self._RealIndex = 0;
 		self._UserIndex = 0;
