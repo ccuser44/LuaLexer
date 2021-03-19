@@ -258,7 +258,7 @@ function lexer.scan(s, include_wspace, merge_wspace, implementation)
 	local matches
 	do
 		local implementation = implementation and assert((type(implementation) == "string" and implementation), "bad argument #4 to 'scan' (string expected, got " .. type(implementation)) or "Lua"
-		matches = (implementation and implementation_spesific_matches[implementation]) {(table.unpack or unpack)(implementation_spesific_matches[implementation]), (table.unpack or unpack)(lua_matches)} or lua_matches
+		matches = (implementation and implementation_spesific_matches[implementation]) and {(table.unpack or unpack)(implementation_spesific_matches[implementation]), (table.unpack or unpack)(lua_matches)} or lua_matches
 	end
 
 	local function lex(first_arg)
