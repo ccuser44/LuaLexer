@@ -254,10 +254,10 @@ end
 function lexer.scan(s, include_wspace, merge_wspace, implementation)
 	local startTime = os.clock()
 	lexer.finished = false
-	assert(type(s) == "string"), "invalid argument #1 to 'scan' (string expected, got " .. type(s))
+	assert(type(s) == "string" and s), "invalid argument #1 to 'scan' (string expected, got " .. type(s))
 	local matches
 	do
-		local implementation = (implementation and assert(type(implementation) == "string"), "bad argument #4 to 'scan' (string expected, got " .. type(implementation)) and implementation or "Lua"
+		local implementation = (implementation and assert(type(implementation) == "string" and implementation), "bad argument #4 to 'scan' (string expected, got " .. type(implementation)) or "Lua"
 		matches = (implementation and implementation_spesific_matches[implementation]) {(table.unpack or unpack)(implementation_spesific_matches[implementation]), (table.unpack or unpack)(lua_matches)} or lua_matches
 	end
 
